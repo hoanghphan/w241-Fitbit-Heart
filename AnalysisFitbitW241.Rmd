@@ -1,0 +1,221 @@
+---
+title: "Fitbit Heart Hangover (W241)"
+author: "Paul Durkin"
+date: "April 17, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(foreign)
+library(data.table)
+library(lmtest)
+library(sandwich)
+library(multiwayvcov)
+library(stargazer)
+library(AER)
+library("multilevelPSA")
+setwd("C:/Users/paul/OneDrive/Documents/Masters-DESKTOP-BC3NQHB/Courses/W241 - Experiments and Causality/Final Project")
+fitbit_pilot_data <- read.csv("./data/Fitbit Measurements - PilotPreprocessed.csv")
+fitbit_data <- read.csv("./data/Fitbit Measurements - Processed2.csv")
+
+fitbit_data_descriptions <- data.frame(c("Day.of.Week","Date","Manual.RHR","Fitbit.RHR","Alcohol","Volume.Pure.Alcohol",
+                                  "Volume.Pure.Alcohol.in.previous.day","Person","Female","age","exercise","CV.Meds",
+                                  "PSTPlus","Weight.LBS","BMI","height.inches","Change.in.Fitbit.HR.from.previous.control.day",
+                                  "Change.in.manual.HR.from.previous.control.day","Numeric.Day"), c(
+                                    "The day of the week Sunday->Saturday","Date of the year",
+                                    "The resting heart rate taken manually this day","The resting heart rate measured by Fitbit",
+                                    "Description of the volume of alcohol this day","Volume of alcohol in terms of MLs pure alcohol",
+                                    "Volume of pure alcohol the previous day","Persons name or unique identifier",
+                                    "True if the person is female","Numeric age in years",
+                                    "True if the person did 20 minutes of caridio this day",
+                                    "True if the person takes cardio-vascular medications",
+                                    "Number of hours the persons timezone is from PST",
+                                    "Weight of the person","BMI of the person calculated using weight and height",
+                                    "Height of the person","The change in Fitbit resting heart rate since the previous control day",
+                                    "The change in manual resting heart rate since the previous control day",
+                                    "0-6 for the days of the week"))
+colnames(fitbit_data_descriptions) <- c("Variable Name", "Description")
+
+################################################
+# Functions for analysis
+################################################
+
+# This function calculates and returns the ATE for the treatment given an array
+# of treatments and control and a treatment mask
+calculateATE <- function (POUntreated, POTreated, TreatmentMask) {
+  if (length(POUntreated) != length(POTreated)) {
+    cat(sprintf("Size of input vectors is not equal"))
+    return(0)
+  }
+  mean(POUntreated[TreatmentMask==1], na.rm=TRUE) - mean(POTreated[TreatmentMask==0], na.rm=TRUE)
+}
+
+# This function creates a treatment mask (array of 1s and 0s) of size MaskSize
+# with numberTreated number of treatments.  If the numberTreated is not supplied
+# then it will create half treatments and half control.
+createTreatmentMask <- function (MaskSize, numberTreated=NULL) {
+  if ( is.null(numberTreated)){
+    cat(sprintf("debug: value for numberTreated not supplied"))
+    numberTreated <- MaskSize %/% 2
+  }
+  if (MaskSize < numberTreated) {
+    cat(sprintf("Error: Number of subjects treated cannot be greater than the sample size"))
+    return(0)
+  }
+  sample(c(rep(0,MaskSize-numberTreated), rep(1,numberTreated)))
+}
+
+# This function runs a randomized inference over the treatment and control sets NumberSims times.
+# If the treatmentsize is provided then it creates random treatment masks of this size, otherwise
+# it creates masks half the size of the treatment and control sets.
+randomizeInference <- function (POUntreated, POTreated, NumberSims, TreatmentSize=NULL) {
+  if (is.null(TreatmentSize)){
+    # use half and half
+    TreatmentSize = length(POUntreated) %/% 2
+  }
+  if (length(POUntreated) != length(POTreated)) {
+    cat(sprintf("Size of input vectors is not equal"))
+    return(0)
+  }
+  if ( NumberSims < 0 ) {
+    cat(sprintf("Need a number of simulations to generate"))
+    return(0)
+  }
+ 
+  replicate(NumberSims,calculateATE(POUntreated,POTreated,
+                                    createTreatmentMask(length(POUntreated), TreatmentSize)))
+}
+
+```
+
+# Pilot analysis
+
+Interesting things here:
+* Initial analysis just doing the delta from the previous day shows a statistically significant intercept of approximately -0.5 indicating that on the days of no alcohol effect there is a decline in heart rate.  This is interesting because it would imply a continuously decreasing heart rate which we know is not true.  The cause of this is twofold
+1. This was my heart rate in January/February.  January saw a "normalization" of my heart rate as here was a huge increase in December due to lack of exercise at the end of term followed by a sedentary Christmas vacation.
+2. This naively ignores the recovery from a previous effect.  If we have an effect one day then the next day there is a decline as it normalizes again.  
+  
+There are two fixes for this
+1. I take a subset of the data from the point (21st entry) where my heart rate dropped under 60 again
+2. Measure the change from the last control day rather than simply the previous day.  This is the last day that had no treatment effect.
+
+The analysis is in the following table.  It shows that when we use the previous control that the intercept is no longer statistically significant.
+
+
+```{r echo=FALSE}
+post_january_data <- fitbit_pilot_data[40:65,]
+pilot_change_from_yesterday <- lm(Change.HR ~ Treatment.Yesterday, data=fitbit_pilot_data)
+pilot_change_from_yesterday_post_january = lm(Change.HR ~ Treatment.Yesterday, data=post_january_data)
+pilot_change_from_control <- lm(Change.HR.Previous.Control ~ Treatment.Yesterday, data=fitbit_pilot_data)
+pilot_change_from_control_post_january <- lm(Change.HR.Previous.Control ~ Treatment.Yesterday, data=post_january_data)
+
+se_model1 = coeftest(pilot_change_from_yesterday, vcov=vcovHC)[,"Std. Error"]
+se_model2 = coeftest(pilot_change_from_yesterday_post_january, vcov=vcovHC)[,"Std. Error"]
+se_model3 = coeftest(pilot_change_from_control, vcov=vcovHC)[,"Std. Error"]
+se_model4 = coeftest(pilot_change_from_control_post_january, vcov=vcovHC)[,"Std. Error"]
+
+stargazer(pilot_change_from_yesterday, pilot_change_from_yesterday_post_january, pilot_change_from_control,
+          pilot_change_from_control_post_january, type="text", omit.stat = "f", 
+          se = list(se_model1, se_model2, se_model3, se_model4))
+```
+
+This shows the decline of my RHR over January and the stabilization at the end.
+
+```{r echo=FALSE}
+plot(as.numeric(rownames(fitbit_pilot_data)), fitbit_pilot_data$Measure)
+lines(lowess(rownames(fitbit_pilot_data),fitbit_pilot_data$Measure))
+```
+
+## Analysis of the main data
+
+### Simple regression
+First things first, is there an effect without including any covariates
+
+```{r echo=FALSE}
+
+# Basic regression of alcohol on change in RHR from previous control day
+simple_reg_fitbit <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day, data=fitbit_data)
+simple_reg_manual <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day, data=fitbit_data)
+simple_reg_fitbit_se <- coeftest(simple_reg_fitbit, vcov=vcovHC)[,"Std. Error"]
+simple_reg_manual_se <- coeftest(simple_reg_manual, vcov=vcovHC)[,"Std. Error"]
+
+# The everything sensible (not putting in variables that are collinear) regression
+all_reg_fitbit <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                       Female + age + exercise + CV.Meds + height.inches + Weight.LBS + PSTPlus, data=fitbit_data)
+all_reg_manual <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                       Female + age + exercise + CV.Meds + height.inches + Weight.LBS + PSTPlus, data=fitbit_data)
+all_reg_fitbit_se <- coeftest(all_reg_fitbit, vcov=vcovHC)[,"Std. Error"]
+all_reg_manual_se <- coeftest(all_reg_manual, vcov=vcovHC)[,"Std. Error"]
+
+# Regressions including single covariates
+single_reg_fitbit_gender <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                                 Female, data=fitbit_data)
+single_reg_fitbit_weight <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                                 Weight.LBS, data=fitbit_data)
+single_reg_fitbit_age <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                              age, data=fitbit_data)
+single_reg_fitbit_bmi <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                              BMI, data=fitbit_data)
+single_reg_fitbit_exercise <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                              exercise, data=fitbit_data)
+single_reg_fitbit_PSTPlus <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                              PSTPlus, data=fitbit_data)
+single_reg_fitbit_gender_se <- coeftest(single_reg_fitbit_gender, vcov=vcovHC)[,"Std. Error"]
+single_reg_fitbit_weight_se <- coeftest(single_reg_fitbit_weight, vcov=vcovHC)[,"Std. Error"]
+single_reg_fitbit_age_se <- coeftest(single_reg_fitbit_age, vcov=vcovHC)[,"Std. Error"]
+single_reg_fitbit_bmi_se <- coeftest(single_reg_fitbit_bmi, vcov=vcovHC)[,"Std. Error"]
+single_reg_fitbit_exercise_se <- coeftest(single_reg_fitbit_exercise, vcov=vcovHC)[,"Std. Error"]
+single_reg_fitbit_PSTPlus_se <- coeftest(single_reg_fitbit_PSTPlus, vcov=vcovHC)[,"Std. Error"]
+
+single_reg_manual_gender <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                                 Female, data=fitbit_data)
+single_reg_manual_weight <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                                 Weight.LBS, data=fitbit_data)
+single_reg_manual_age <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                              age, data=fitbit_data)
+single_reg_manual_bmi <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                              BMI, data=fitbit_data)
+single_reg_manual_exercise <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                              exercise, data=fitbit_data)
+single_reg_manual_PSTPlus <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                              PSTPlus, data=fitbit_data)
+single_reg_manual_gender_se <- coeftest(single_reg_manual_gender, vcov=vcovHC)[,"Std. Error"]
+single_reg_manual_weight_se <- coeftest(single_reg_manual_weight, vcov=vcovHC)[,"Std. Error"]
+single_reg_manual_age_se <- coeftest(single_reg_manual_age, vcov=vcovHC)[,"Std. Error"]
+single_reg_manual_bmi_se <- coeftest(single_reg_manual_bmi, vcov=vcovHC)[,"Std. Error"]
+single_reg_manual_exercise_se <- coeftest(single_reg_manual_exercise, vcov=vcovHC)[,"Std. Error"]
+single_reg_manual_PSTPlus_se <- coeftest(single_reg_manual_PSTPlus, vcov=vcovHC)[,"Std. Error"]
+
+# The factors we would have considered most likley to impact, age, gender and weight
+expected_reg_fitbit <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                       Female + age + Weight.LBS, data=fitbit_data)
+expected_reg_fitbit_se <- coeftest(expected_reg_fitbit, vcov=vcovHC)[,"Std. Error"]
+expected_reg_manual <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                       Female + age + Weight.LBS, data=fitbit_data)
+expected_reg_manual_se <- coeftest(expected_reg_manual, vcov=vcovHC)[,"Std. Error"]
+```
+
+```{r echo=FALSE}
+stargazer(simple_reg_fitbit, single_reg_fitbit_gender, single_reg_fitbit_weight, single_reg_fitbit_age, 
+          single_reg_fitbit_bmi, single_reg_fitbit_exercise, single_reg_fitbit_PSTPlus, expected_reg_fitbit, all_reg_fitbit, 
+          type="text",
+          omit.stat = "f",
+          star.cutoffs = c(0.05,0.01, 0.001),
+          se = list(simple_reg_fitbit_se, single_reg_fitbit_gender_se, single_reg_fitbit_weight_se, single_reg_fitbit_age_se, 
+                    single_reg_fitbit_bmi_se, single_reg_fitbit_exercise_se, single_reg_fitbit_PSTPlus_se, expected_reg_fitbit_se, all_reg_fitbit_se))
+```
+
+```{r echo=FALSE}
+stargazer(simple_reg_manual, single_reg_manual_gender, single_reg_manual_weight, single_reg_manual_age,
+          single_reg_manual_bmi, single_reg_manual_exercise, single_reg_manual_PSTPlus, expected_reg_manual, all_reg_manual,
+          type="text",
+          omit.stat = "f",
+          title = "Manual Regressions Comparison",
+          star.cutoffs = c(0.05,0.01, 0.001),
+          se = list(simple_reg_manual_se, single_reg_manual_gender_se, single_reg_manual_weight_se, single_reg_manual_age_se,
+                    single_reg_manual_bmi_se, single_reg_manual_exercise_se, single_reg_manual_PSTPlus_se, expected_reg_manual_se, all_reg_manual_se))
+```
+
+Both of these show a statistically significant result which immediately seems to lean towards the hypothesis that the effect is real.
+
