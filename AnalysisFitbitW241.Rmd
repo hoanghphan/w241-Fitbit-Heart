@@ -15,7 +15,7 @@ library(multiwayvcov)
 library(stargazer)
 library(AER)
 library("multilevelPSA")
-setwd("C:/Users/paul/OneDrive/Documents/Masters-DESKTOP-BC3NQHB/Courses/W241 - Experiments and Causality/Final Project")
+setwd("C:/Users/paul/Git/W241/w241-Fitbit-Heart")
 fitbit_pilot_data <- read.csv("./data/Fitbit Measurements - PilotPreprocessed.csv")
 fitbit_data <- read.csv("./data/Fitbit Measurements - Processed2.csv")
 
@@ -89,6 +89,42 @@ randomizeInference <- function (POUntreated, POTreated, NumberSims, TreatmentSiz
 
 ```
 
+
+# Randomization
+```{r}
+randomize_days <- function() {
+  days <- c(1,2,3,4,5,6,7)
+  day_names <- c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+  
+  latest <- sample(days, 1, replace=FALSE)
+  random_days <- c(latest)
+  days <- days[days != latest]
+  index <- 1
+  while (length(days) > 1 && index < 20) {
+    potential_day <- sample(days, 1, replace=FALSE)
+    if (((latest + 1) %% 7) != potential_day) {
+      random_days <- c(random_days, potential_day)
+      latest <- potential_day
+      days <- days[days != potential_day]
+    }
+    index <- index+1
+  }
+  if (length(days) == 1 & days[1] != latest + 1) {
+    random_days <- c(random_days, days)
+  }
+  if (length(random_days) < 7) {
+    # This failure can occur due to random chance (the last day is within one day of the previous one)
+    # so simply start the function again
+    return(randomize_days())
+  }
+  else {
+    return(day_names[random_days])
+  }
+}
+
+randomize_days()
+```
+
 # Pilot analysis
 
 Interesting things here:
@@ -123,7 +159,7 @@ stargazer(pilot_change_from_yesterday, pilot_change_from_yesterday_post_january,
 This shows the decline of my RHR over January and the stabilization at the end.
 
 ```{r echo=FALSE}
-plot(as.numeric(rownames(fitbit_pilot_data)), fitbit_pilot_data$Measure)
+plot(as.numeric(rownames(fitbit_pilot_data)), fitbit_pilot_data$Measure, xlab = "Days from December 31st", ylab="RHR")
 lines(lowess(rownames(fitbit_pilot_data),fitbit_pilot_data$Measure))
 ```
 
@@ -202,6 +238,8 @@ stargazer(simple_reg_fitbit, single_reg_fitbit_gender, single_reg_fitbit_weight,
           type="text",
           omit.stat = "f",
           star.cutoffs = c(0.05,0.01, 0.001),
+          single.row=TRUE,
+          column.sep.width = "1pt",
           se = list(simple_reg_fitbit_se, single_reg_fitbit_gender_se, single_reg_fitbit_weight_se, single_reg_fitbit_age_se, 
                     single_reg_fitbit_bmi_se, single_reg_fitbit_exercise_se, single_reg_fitbit_PSTPlus_se, expected_reg_fitbit_se, all_reg_fitbit_se))
 ```
