@@ -183,6 +183,13 @@ all_reg_manual <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure
                        Female + age + exercise + CV.Meds + height.inches + Weight.LBS + PSTPlus, data=fitbit_data)
 all_reg_fitbit_se <- coeftest(all_reg_fitbit, vcov=vcovHC)[,"Std. Error"]
 all_reg_manual_se <- coeftest(all_reg_manual, vcov=vcovHC)[,"Std. Error"]
+# The everything including the person variable
+all_person_reg_fitbit <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                       Female + age + exercise + CV.Meds + height.inches + Weight.LBS + PSTPlus + Person, data=fitbit_data)
+all_person_reg_manual <- lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+                       Female + age + exercise + CV.Meds + height.inches + Weight.LBS + PSTPlus + Person, data=fitbit_data)
+all_person_reg_fitbit_se <- coeftest(all_person_reg_fitbit, vcov=vcovHC)[,"Std. Error"]
+all_person_reg_manual_se <- coeftest(all_person_reg_manual, vcov=vcovHC)[,"Std. Error"]
 
 # Regressions including single covariates
 single_reg_fitbit_gender <- lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
@@ -234,26 +241,47 @@ expected_reg_manual_se <- coeftest(expected_reg_manual, vcov=vcovHC)[,"Std. Erro
 
 ```{r echo=FALSE}
 stargazer(simple_reg_fitbit, single_reg_fitbit_gender, single_reg_fitbit_weight, single_reg_fitbit_age, 
-          single_reg_fitbit_bmi, single_reg_fitbit_exercise, single_reg_fitbit_PSTPlus, expected_reg_fitbit, all_reg_fitbit, 
+          single_reg_fitbit_bmi, single_reg_fitbit_exercise, single_reg_fitbit_PSTPlus, expected_reg_fitbit, all_reg_fitbit, all_person_reg_fitbit,
           type="text",
           omit.stat = "f",
           star.cutoffs = c(0.05,0.01, 0.001),
-          single.row=TRUE,
           column.sep.width = "1pt",
           se = list(simple_reg_fitbit_se, single_reg_fitbit_gender_se, single_reg_fitbit_weight_se, single_reg_fitbit_age_se, 
-                    single_reg_fitbit_bmi_se, single_reg_fitbit_exercise_se, single_reg_fitbit_PSTPlus_se, expected_reg_fitbit_se, all_reg_fitbit_se))
+                    single_reg_fitbit_bmi_se, single_reg_fitbit_exercise_se, single_reg_fitbit_PSTPlus_se, expected_reg_fitbit_se, all_reg_fitbit_se,
+                    all_person_reg_fitbit_se))
+
+linearHypothesis(all_reg_fitbit, c("Female=0", "age=0", "exercise=0","CV.Meds=0","height.inches=0","Weight.LBS=0","PSTPlus=0"), vcov=vcovHC)
+linearHypothesis(all_person_reg_fitbit, c("Female=0", "age=0", "exercise=0","CV.Meds=0","height.inches=0","Weight.LBS=0","PSTPlus=0", "Person=0"), vcov=vcovHC)
+
 ```
 
 ```{r echo=FALSE}
 stargazer(simple_reg_manual, single_reg_manual_gender, single_reg_manual_weight, single_reg_manual_age,
-          single_reg_manual_bmi, single_reg_manual_exercise, single_reg_manual_PSTPlus, expected_reg_manual, all_reg_manual,
+          single_reg_manual_bmi, single_reg_manual_exercise, single_reg_manual_PSTPlus, expected_reg_manual, all_reg_manual,all_person_reg_manual,
           type="text",
           omit.stat = "f",
           title = "Manual Regressions Comparison",
           star.cutoffs = c(0.05,0.01, 0.001),
           se = list(simple_reg_manual_se, single_reg_manual_gender_se, single_reg_manual_weight_se, single_reg_manual_age_se,
-                    single_reg_manual_bmi_se, single_reg_manual_exercise_se, single_reg_manual_PSTPlus_se, expected_reg_manual_se, all_reg_manual_se))
+                    single_reg_manual_bmi_se, single_reg_manual_exercise_se, single_reg_manual_PSTPlus_se, expected_reg_manual_se, all_reg_manual_se,
+                    all_person_reg_manual_se))
+
+linearHypothesis(all_reg_manual, c("Female=0", "age=0", "exercise=0","CV.Meds=0","height.inches=0","Weight.LBS=0","PSTPlus=0"), vcov=vcovHC)
+
+linearHypothesis(all_person_reg_manual, c("Female=0", "age=0", "exercise=0","CV.Meds=0","height.inches=0","Weight.LBS=0","PSTPlus=0", "Person=0"), vcov=vcovHC)
 ```
 
-Both of these show a statistically significant result which immediately seems to lean towards the hypothesis that the effect is real.
 
+# Fixed effects on the person
+
+```{r}
+coeftest(lm(Fitbit.RHR ~ Volume.Pure.Alcohol.in.previous.day + Person, data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + Person, data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Manual.RHR ~ Volume.Pure.Alcohol.in.previous.day + Person, data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + Person, data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Fitbit.RHR ~ Day.of.Week, data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Fitbit.RHR ~ Volume.Pure.Alcohol.in.previous.day + Day.of.Week, data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Change.in.Fitbit.HR.from.previous.control.day ~ Day.of.Week, data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + Day.of.Week, data=fitbit_data), vcov=vcovHC)
+
+```
