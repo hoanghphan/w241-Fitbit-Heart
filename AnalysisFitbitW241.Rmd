@@ -284,4 +284,347 @@ coeftest(lm(Fitbit.RHR ~ Volume.Pure.Alcohol.in.previous.day + Day.of.Week, data
 coeftest(lm(Change.in.Fitbit.HR.from.previous.control.day ~ Day.of.Week, data=fitbit_data), vcov=vcovHC)
 coeftest(lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + Day.of.Week, data=fitbit_data), vcov=vcovHC)
 
+```Show in New WindowClear OutputExpand/Collapse Output
+[1] "Tuesday"   "Sunday"    "Thursday"  "Wednesday" "Saturday"  "Friday"    "Monday"   
+Show in New WindowClear OutputExpand/Collapse Output
+the condition has length > 1 and only the first element will be usedthe condition has length > 1 and only the first element will be used
+===================================================================================
+                                          Dependent variable:                      
+                    ---------------------------------------------------------------
+                               Change.HR              Change.HR.Previous.Control   
+                          (1)             (2)             (3)             (4)      
+-----------------------------------------------------------------------------------
+Treatment.Yesterday    1.945***        1.750***        1.719***         1.361**    
+                        (0.404)         (0.613)         (0.398)         (0.588)    
+                                                                                   
+Constant               -0.491***        -0.500          -0.264          -0.111     
+                        (0.190)         (0.426)         (0.177)         (0.389)    
+                                                                                   
+-----------------------------------------------------------------------------------
+Observations              64              26              64              26       
+R2                       0.239           0.215           0.217           0.161     
+Adjusted R2              0.226           0.182           0.204           0.127     
+Residual Std. Error 1.332 (df = 62) 1.607 (df = 24) 1.251 (df = 62) 1.490 (df = 24)
+===================================================================================
+Note:                                                   *p<0.1; **p<0.05; ***p<0.01
+Show in New WindowClear OutputExpand/Collapse Output
+the condition has length > 1 and only the first element will be usedthe condition has length > 1 and only the first element will be usednumber of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)
+=============================================================================================================================================================================================================
+                                                                                                               Dependent variable:                                                                           
+                                    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                                  Change.in.Fitbit.HR.from.previous.control.day                                                              
+                                          (1)              (2)              (3)              (4)              (5)              (6)              (7)              (8)              (9)              (10)      
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Volume.Pure.Alcohol.in.previous.day     0.024**          0.023**          0.023**          0.024**          0.024**          0.023**          0.024**          0.024**          0.024**          0.024**     
+                                        (0.008)          (0.009)          (0.008)          (0.008)          (0.008)          (0.008)          (0.008)          (0.008)          (0.009)          (0.009)     
+                                                                                                                                                                                                             
+Female                                                    -0.034                                                                                                0.302            -1.828           -2.724     
+                                                         (0.358)                                                                                               (0.415)          (2.863)          (3.124)     
+                                                                                                                                                                                                             
+Weight.LBS                                                                 0.008                                                                                0.012            0.020            0.016      
+                                                                          (0.006)                                                                              (0.009)          (0.019)          (0.020)     
+                                                                                                                                                                                                             
+age                                                                                         0.019                                                               0.001            0.281            0.362      
+                                                                                           (0.021)                                                             (0.026)          (0.410)          (0.430)     
+                                                                                                                                                                                                             
+BMI                                                                                                          0.102                                                                                           
+                                                                                                            (0.054)                                                                                          
+                                                                                                                                                                                                             
+exercise                                                                                                                      0.322                                              1.065            1.197      
+                                                                                                                             (0.383)                                            (1.009)          (1.037)     
+                                                                                                                                                                                                             
+CV.Meds                                                                                                                                                                          -1.442           -2.344     
+                                                                                                                                                                                (1.758)          (2.104)     
+                                                                                                                                                                                                             
+height.inches                                                                                                                                                                    -0.632           -0.685     
+                                                                                                                                                                                (0.731)          (0.737)     
+                                                                                                                                                                                                             
+PSTPlus                                                                                                                                        0.002                             -0.300           -0.324     
+                                                                                                                                              (0.060)                           (0.507)          (0.509)     
+                                                                                                                                                                                                             
+PersonA2                                                                                                                                                                                          1.197      
+                                                                                                                                                                                                 (0.892)     
+                                                                                                                                                                                                             
+PersonCL                                                                                                                                                                                                     
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonCY                                                                                                                                                                                                     
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonHoang                                                                                                                                                                                                  
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonKyle                                                                                                                                                                                                   
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonPaul                                                                                                                                                                                                   
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonWL                                                                                                                                                                                                     
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+Constant                                 -0.210           -0.193           -1.435           -0.878          -2.528*           -0.343           -0.222           -2.149           32.161           34.004     
+                                        (0.215)          (0.309)          (0.863)          (0.784)          (1.232)          (0.274)          (0.545)          (1.167)          (40.515)         (40.589)    
+                                                                                                                                                                                                             
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Observations                              125              125              125              125              125              125              125              125              125              125       
+R2                                       0.136            0.136            0.143            0.140            0.147            0.141            0.136            0.146            0.188            0.197      
+Adjusted R2                              0.129            0.122            0.129            0.126            0.133            0.127            0.122            0.118            0.131            0.134      
+Residual Std. Error                 2.099 (df = 123) 2.108 (df = 122) 2.099 (df = 122) 2.104 (df = 122) 2.095 (df = 122) 2.102 (df = 122) 2.108 (df = 122) 2.113 (df = 120) 2.097 (df = 116) 2.094 (df = 115)
+=============================================================================================================================================================================================================
+Note:                                                                                                                                                                           *p<0.05; **p<0.01; ***p<0.001
+Linear hypothesis test
+
+Hypothesis:
+Female = 0
+age = 0
+exercise = 0
+CV.Meds = 0
+height.inches = 0
+Weight.LBS = 0
+PSTPlus = 0
+
+Model 1: restricted model
+Model 2: Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+    Female + age + exercise + CV.Meds + height.inches + Weight.LBS + 
+    PSTPlus
+
+Note: Coefficient covariance matrix supplied.
+
+  Res.Df Df      F Pr(>F)
+1    123                 
+2    116  7 0.8044 0.5852
+ Show Traceback
+Error in linearHypothesis.lm(all_person_reg_fitbit, c("Female=0", "age=0", : there are aliased coefficients in the model.
+Show in New WindowClear OutputExpand/Collapse Output
+the condition has length > 1 and only the first element will be usedthe condition has length > 1 and only the first element will be usednumber of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)number of rows of result is not a multiple of vector length (arg 2)
+Manual Regressions Comparison
+=============================================================================================================================================================================================================
+                                                                                                               Dependent variable:                                                                           
+                                    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                                  Change.in.manual.HR.from.previous.control.day                                                              
+                                          (1)              (2)              (3)              (4)              (5)              (6)              (7)              (8)              (9)              (10)      
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Volume.Pure.Alcohol.in.previous.day     0.034**          0.034**          0.033**          0.033**          0.033**          0.034**          0.034**          0.033**          0.037***         0.037**     
+                                        (0.011)          (0.011)          (0.011)          (0.011)          (0.011)          (0.011)          (0.011)          (0.012)          (0.011)          (0.011)     
+                                                                                                                                                                                                             
+Female                                                    0.049                                                                                                 0.0004           -1.158           -1.149     
+                                                         (0.506)                                                                                               (0.739)          (0.903)          (3.548)     
+                                                                                                                                                                                                             
+Weight.LBS                                                                 -0.006                                                                               -0.005           0.011            0.044      
+                                                                          (0.008)                                                                              (0.012)          (0.017)          (0.214)     
+                                                                                                                                                                                                             
+age                                                                                         -0.012                                                              -0.008           0.0004           -0.044     
+                                                                                           (0.022)                                                             (0.033)          (0.042)          (0.367)     
+                                                                                                                                                                                                             
+BMI                                                                                                          -0.028                                                                                          
+                                                                                                            (0.063)                                                                                          
+                                                                                                                                                                                                             
+exercise                                                                                                                      0.855                                              1.747*           2.000      
+                                                                                                                             (0.511)                                            (0.789)          (1.242)     
+                                                                                                                                                                                                             
+CV.Meds                                                                                                                                                                          -2.511           -3.432     
+                                                                                                                                                                                (1.519)          (4.243)     
+                                                                                                                                                                                                             
+height.inches                                                                                                                                                                    -0.239           -0.330     
+                                                                                                                                                                                (0.261)          (0.432)     
+                                                                                                                                                                                                             
+PSTPlus                                                                                                                                        -0.025                            0.152            0.204      
+                                                                                                                                              (0.069)                           (0.118)          (0.183)     
+                                                                                                                                                                                                             
+PersonA4                                                                                                                                                                                          -2.100     
+                                                                                                                                                                                                 (15.302)    
+                                                                                                                                                                                                             
+PersonA5                                                                                                                                                                                          -0.398     
+                                                                                                                                                                                                 (6.430)     
+                                                                                                                                                                                                             
+PersonA6                                                                                                                                                                                          -1.871     
+                                                                                                                                                                                                 (9.009)     
+                                                                                                                                                                                                             
+PersonCL                                                                                                                                                                                                     
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonCY                                                                                                                                                                                                     
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonHoang                                                                                                                                                                                                  
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonKyle                                                                                                                                                                                                   
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonPaul                                                                                                                                                                                                   
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+PersonWL                                                                                                                                                                                                     
+                                                                                                                                                                                                             
+                                                                                                                                                                                                             
+Constant                                 -0.101           -0.125           0.797            0.362            0.591            -0.573           0.065            1.000            12.947           15.528     
+                                        (0.278)          (0.387)          (1.331)          (0.932)          (1.584)          (0.410)          (0.534)          (1.536)          (16.769)         (17.821)    
+                                                                                                                                                                                                             
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Observations                              149              149              149              149              149              149              149              149              149              149       
+R2                                       0.112            0.112            0.115            0.113            0.113            0.129            0.113            0.115            0.175            0.178      
+Adjusted R2                              0.106            0.100            0.103            0.101            0.101            0.117            0.101            0.091            0.127            0.112      
+Residual Std. Error                 3.086 (df = 147) 3.097 (df = 146) 3.093 (df = 146) 3.095 (df = 146) 3.095 (df = 146) 3.067 (df = 146) 3.095 (df = 146) 3.113 (df = 144) 3.049 (df = 140) 3.076 (df = 137)
+=============================================================================================================================================================================================================
+Note:                                                                                                                                                                           *p<0.05; **p<0.01; ***p<0.001
+Linear hypothesis test
+
+Hypothesis:
+Female = 0
+age = 0
+exercise = 0
+CV.Meds = 0
+height.inches = 0
+Weight.LBS = 0
+PSTPlus = 0
+
+Model 1: restricted model
+Model 2: Change.in.manual.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + 
+    Female + age + exercise + CV.Meds + height.inches + Weight.LBS + 
+    PSTPlus
+
+Note: Coefficient covariance matrix supplied.
+
+  Res.Df Df      F Pr(>F)
+1    147                 
+2    140  7 1.2861 0.2614
+ Show Traceback
+Error in linearHypothesis.lm(all_person_reg_manual, c("Female=0", "age=0", : there are aliased coefficients in the model.
+Modify Chunk OptionsRun All Chunks AboveRun Current Chunk
+Show in New WindowClear OutputExpand/Collapse Output
+
+t test of coefficients:
+
+                                     Estimate Std. Error  t value  Pr(>|t|)    
+(Intercept)                         59.940705   0.295985 202.5129 < 2.2e-16 ***
+Volume.Pure.Alcohol.in.previous.day  0.019151   0.010315   1.8566   0.06575 .  
+PersonA2                            11.727965   0.379160  30.9314 < 2.2e-16 ***
+PersonCL                             8.745145   0.581356  15.0427 < 2.2e-16 ***
+PersonCY                             6.254930   0.526950  11.8701 < 2.2e-16 ***
+PersonHoang                          4.288673   1.997977   2.1465   0.03378 *  
+PersonKyle                          -1.595990   0.358330  -4.4540 1.858e-05 ***
+PersonPaul                          -3.255147   0.427285  -7.6182 5.724e-12 ***
+PersonWL                            10.381250   0.464863  22.3318 < 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+t test of coefficients:
+
+                                     Estimate Std. Error t value Pr(>|t|)   
+(Intercept)                         -0.054799   0.455652 -0.1203 0.904482   
+Volume.Pure.Alcohol.in.previous.day  0.023562   0.008612  2.7359 0.007199 **
+PersonA2                            -0.058798   0.526650 -0.1116 0.911297   
+PersonCL                            -0.048285   0.600917 -0.0804 0.936096   
+PersonCY                            -0.333249   0.614408 -0.5424 0.588590   
+PersonHoang                          0.667986   2.221954  0.3006 0.764235   
+PersonKyle                          -0.788075   0.502725 -1.5676 0.119697   
+PersonPaul                           0.086160   0.536466  0.1606 0.872682   
+PersonWL                            -0.042467   0.638814 -0.0665 0.947112   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+t test of coefficients:
+
+                                      Estimate Std. Error  t value  Pr(>|t|)    
+(Intercept)                          63.905898   0.509656 125.3902 < 2.2e-16 ***
+Volume.Pure.Alcohol.in.previous.day   0.032936   0.011441   2.8788 0.0045843 ** 
+PersonA4                              2.789163   0.746900   3.7343 0.0002679 ***
+PersonA5                              6.019014   0.730541   8.2391 8.480e-14 ***
+PersonA6                             -9.284862   0.642607 -14.4488 < 2.2e-16 ***
+PersonCL                             -8.276810   0.880247  -9.4028 < 2.2e-16 ***
+PersonCY                              2.974977   0.651585   4.5658 1.039e-05 ***
+PersonHoang                           1.968774   1.977479   0.9956 0.3210705    
+PersonKyle                           -3.467650   0.701023  -4.9466 2.027e-06 ***
+PersonPaul                          -11.439578   0.867240 -13.1908 < 2.2e-16 ***
+PersonWL                             -2.832072   0.924279  -3.0641 0.0025951 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+t test of coefficients:
+
+                                     Estimate Std. Error t value Pr(>|t|)   
+(Intercept)                          0.042043   0.681474  0.0617 0.950896   
+Volume.Pure.Alcohol.in.previous.day  0.036336   0.012003  3.0273 0.002945 **
+PersonA4                            -0.397897   1.253048 -0.3175 0.751311   
+PersonA5                            -0.057057   1.205480 -0.0473 0.962318   
+PersonA6                             0.377686   0.925887  0.4079 0.683966   
+PersonCL                            -0.138513   1.073694 -0.1290 0.897541   
+PersonCY                            -0.248360   0.899959 -0.2760 0.782985   
+PersonHoang                         -1.111116   2.479654 -0.4481 0.654789   
+PersonKyle                           0.294478   0.850837  0.3461 0.729792   
+PersonPaul                          -1.400295   1.059316 -1.3219 0.188393   
+PersonWL                             0.471475   1.075220  0.4385 0.661716   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+t test of coefficients:
+
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)          64.66667    1.32728 48.7213   <2e-16 ***
+Day.of.WeekMonday     0.15686    1.89103  0.0830   0.9340    
+Day.of.WeekSaturday   0.66667    1.84210  0.3619   0.7180    
+Day.of.WeekSunday     0.45098    2.01241  0.2241   0.8230    
+Day.of.WeekThursday  -0.71429    1.84636 -0.3869   0.6995    
+Day.of.WeekTuesday   -0.66667    1.89437 -0.3519   0.7255    
+Day.of.WeekWednesday -0.66667    1.94485 -0.3428   0.7323    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+t test of coefficients:
+
+                                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                         65.0547629  1.3810911 47.1039   <2e-16 ***
+Volume.Pure.Alcohol.in.previous.day -0.0158253  0.0185129 -0.8548   0.3943    
+Day.of.WeekMonday                   -0.0031632  1.9235387 -0.0016   0.9987    
+Day.of.WeekSaturday                  0.7370515  1.8849811  0.3910   0.6965    
+Day.of.WeekSunday                    0.3756662  2.0860393  0.1801   0.8574    
+Day.of.WeekThursday                 -0.9139857  1.8396623 -0.4968   0.6202    
+Day.of.WeekTuesday                  -0.6942981  1.9199215 -0.3616   0.7182    
+Day.of.WeekWednesday                -0.8103502  1.9515203 -0.4152   0.6787    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+t test of coefficients:
+
+                     Estimate Std. Error t value Pr(>|t|)
+(Intercept)           0.80000    0.75394  1.0611   0.2908
+Day.of.WeekMonday    -1.00000    0.87427 -1.1438   0.2550
+Day.of.WeekSaturday   0.30000    0.95174  0.3152   0.7532
+Day.of.WeekSunday    -0.74118    0.88047 -0.8418   0.4016
+Day.of.WeekThursday  -0.96667    0.88582 -1.0913   0.2774
+Day.of.WeekTuesday   -0.85882    0.89804 -0.9563   0.3409
+Day.of.WeekWednesday -0.57778    0.87524 -0.6601   0.5105
+
+
+t test of coefficients:
+
+                                     Estimate Std. Error t value Pr(>|t|)  
+(Intercept)                          0.226067   0.517931  0.4365  0.66329  
+Volume.Pure.Alcohol.in.previous.day  0.022289   0.008574  2.5996  0.01054 *
+Day.of.WeekMonday                   -0.790115   0.719119 -1.0987  0.27414  
+Day.of.WeekSaturday                  0.195912   0.932793  0.2100  0.83401  
+Day.of.WeekSunday                   -0.607772   0.759556 -0.8002  0.42524  
+Day.of.WeekThursday                 -0.702298   0.748236 -0.9386  0.34987  
+Day.of.WeekTuesday                  -0.822441   0.822589 -0.9998  0.31946  
+Day.of.WeekWednesday                -0.348081   0.751499 -0.4632  0.64409  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+
+
+# Checking for HTEs
+
+```{r}
+coeftest(lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + BMI + (Volume.Pure.Alcohol.in.previous.day*BMI), data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + Weight.LBS + (Volume.Pure.Alcohol.in.previous.day*Weight.LBS), data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + PSTPlus + (Volume.Pure.Alcohol.in.previous.day*PSTPlus), data=fitbit_data), vcov=vcovHC)
+coeftest(lm(Change.in.Fitbit.HR.from.previous.control.day ~ Volume.Pure.Alcohol.in.previous.day + height.inches + (Volume.Pure.Alcohol.in.previous.day*height.inches), data=fitbit_data), vcov=vcovHC)
 ```
